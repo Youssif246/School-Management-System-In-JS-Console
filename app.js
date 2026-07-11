@@ -3,7 +3,9 @@ const prompt = require("prompt-sync")();
 let isExitSystem = false
 let students = []
 
-function showMainMenu () {
+// Show Menu Functions
+
+function showMainMenu() {
     console.log(
         `
     ========================================
@@ -20,7 +22,7 @@ function showMainMenu () {
         `)
 }
 
-function showStudentsMenu () {
+function showStudentsMenu() {
     console.clear()
     console.log(`
     ========================================
@@ -38,20 +40,32 @@ function showStudentsMenu () {
                 `)
 }
 
-function addStudent () {
+function showSearchMenu() {
+    console.log(`
+========== SEARCH =========
+
+1. Search By ID
+
+2. Search By Name      
+        `)
+}
+
+// Students Operation Functions
+
+function addStudent() {
     console.clear()
     console.log(`========= ADD STUDENT =========`)
 
     let studentId = prompt("Enter Student ID: ")
     let studentName = prompt("Enter Student Name: ")
     let studentAge = prompt("Enter Student Age: ")
-    let studentGrade = prompt("Enter Student Grade: ")            
-            
+    let studentGrade = prompt("Enter Student Grade: ")
+
     let student = {
-        id : studentId,
-        name : studentName,
-        age : studentAge,
-        grade : studentGrade,
+        id: studentId,
+        name: studentName,
+        age: studentAge,
+        grade: studentGrade,
     }
 
     students.push(student)
@@ -59,29 +73,38 @@ function addStudent () {
         ---------------------------------
            Student Added Successfully
         ---------------------------------  
-    `)     
+        `)
 }
 
-function viewStudents () {
-    console.clear() 
-    console.log("========== RESULT ==========")
-    for (let i = 0; i < students.length; i++) {
+function searchStudent(key) {
+    const studentSearchValue = prompt(`Enter ${key}: `)
+    return students.filter(function (student) {
+        return student[key.toLowerCase()] === studentSearchValue
+    })
+}
+
+function showStudents(searchedStudentsList) {
+    console.clear()
+    console.log(`========== RESULT ==========`)
+    for (let i = 0; i < searchedStudentsList.length; i++) {
         console.log(`
-    ID : ${students[i].id}
-    Name : ${students[i].name}
-    Age : ${students[i].age}
-    Grade : ${students[i].grade}
+        ID : ${searchedStudentsList[i].id}
+        Name : ${searchedStudentsList[i].name}
+        Age : ${searchedStudentsList[i].age}
+        Grade : ${searchedStudentsList[i].grade}
+
+----------------------------
                     `)
-    }    
+    }
 }
 
-function exitSystem () {
-    isExitSystem = true 
+function exitSystem() {
+    isExitSystem = true
 }
 
-while (true) {
-
-    showMainMenu()    
+while (!isExitSystem) {
+    
+    showMainMenu()
     const welcomeChoice = prompt("Enter your choice: ");
     switch (Number(welcomeChoice)) {
         case 1:
@@ -89,18 +112,32 @@ while (true) {
             const studentsMenuChoice = prompt("Enter your choice: ");
             switch (Number(studentsMenuChoice)) {
                 case 1:
-                    addStudent()            
+                    addStudent()
                     break
                 case 2:
-                    viewStudents()
+                    showStudents(students)
                     break
+                case 3:
+                    showSearchMenu()
+                    const searchMethod = prompt("Choose: ")
+                    switch (Number(searchMethod)) {
+                        case 1:
+                            const searchStudentResultsById =  searchStudent("ID")
+                            showStudents(searchStudentResultsById)
+                            break;
+                        case 2:
+                            const searchStudentResultsByName = searchStudent("Name")
+                            showStudents(searchStudentResultsByName)
+                            break;
+                    }
+                    
             }
+            break
         case 3:
             exitSystem()
             break
     }
 
     prompt("Press Enter To Continue...  ")
-    console.clear()    
+    console.clear()
 }
-   
