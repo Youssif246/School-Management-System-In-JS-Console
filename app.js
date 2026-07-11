@@ -1,8 +1,9 @@
 const prompt = require("prompt-sync")();
 
+let isExitSystem = false
 let students = []
 
-while (true) {
+function showMainMenu () {
     console.log(
         `
     ========================================
@@ -15,17 +16,13 @@ while (true) {
 
     1. Students
     2. Statistics
-    3. Exit
-
-    Enter your choice:  
+    3. Exit 
         `)
-        
-    const welcomeChoice = prompt("Enter your choice: ");
+}
 
-    switch (Number(welcomeChoice)) {
-        case 1:
-            console.clear()
-            console.log(`
+function showStudentsMenu () {
+    console.clear()
+    console.log(`
     ========================================
                 STUDENTS MENU
     ========================================
@@ -39,48 +36,69 @@ while (true) {
     7. Filter Students
     8. Back            
                 `)
-            break
+}
+
+function addStudent () {
+    console.clear()
+    console.log(`========= ADD STUDENT =========`)
+
+    let studentId = prompt("Enter Student ID: ")
+    let studentName = prompt("Enter Student Name: ")
+    let studentAge = prompt("Enter Student Age: ")
+    let studentGrade = prompt("Enter Student Grade: ")            
+            
+    let student = {
+        id : studentId,
+        name : studentName,
+        age : studentAge,
+        grade : studentGrade,
     }
 
-    const menuChoice = prompt("Enter your choice: ");
+    students.push(student)
+    console.log(`
+        ---------------------------------
+           Student Added Successfully
+        ---------------------------------  
+    `)     
+}
 
-    switch (Number(menuChoice)) {
-        case 1:
-            console.clear()
-            console.log(`========= ADD STUDENT =========`)
-
-            var studentId = prompt("Enter Student ID: ")
-            var studentName = prompt("Enter Student Name: ")
-            var studentAge = prompt("Enter Student Age: ")
-            var studentGrade = prompt("Enter Student Grade: ")            
-            
-            var student = {
-                id : studentId,
-                name : studentName,
-                age : studentAge,
-                grade : studentGrade,
-            }
-
-            students.push(student)
-            console.log(`
-                ---------------------------------
-                   Student Added Successfully
-                ---------------------------------  
-                `)            
-                break
-        
-        case 2:
-            console.clear() 
-            console.log("========== RESULT ==========")
-            for (let i = 0; i < students.length; i++) {
-                console.log(`
+function viewStudents () {
+    console.clear() 
+    console.log("========== RESULT ==========")
+    for (let i = 0; i < students.length; i++) {
+        console.log(`
     ID : ${students[i].id}
     Name : ${students[i].name}
     Age : ${students[i].age}
     Grade : ${students[i].grade}
                     `)
+    }    
+}
+
+function exitSystem () {
+    isExitSystem = true 
+}
+
+while (true) {
+
+    showMainMenu()    
+    const welcomeChoice = prompt("Enter your choice: ");
+    switch (Number(welcomeChoice)) {
+        case 1:
+            showStudentsMenu()
+            const studentsMenuChoice = prompt("Enter your choice: ");
+            switch (Number(studentsMenuChoice)) {
+                case 1:
+                    addStudent()            
+                    break
+                case 2:
+                    viewStudents()
+                    break
             }
-            }
+        case 3:
+            exitSystem()
+            break
+    }
 
     prompt("Press Enter To Continue...  ")
     console.clear()    
