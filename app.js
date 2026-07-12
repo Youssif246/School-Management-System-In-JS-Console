@@ -50,6 +50,27 @@ function showSearchMenu() {
         `)
 }
 
+// Get User Inputs
+
+function getUserChoice() {
+    return prompt("Enter your choice: ")
+}
+
+function getStudentId() {
+    return prompt("Enter Student ID: ")
+}
+
+function getStudentName() {
+    return prompt("Enter Student Name: ")
+}
+
+function getStudentUpdatedData() {
+    const newName = prompt("Enter New Name: ")
+    const newAge = prompt("Enter New Age: ")
+    const newGrade = prompt("Enter New Grade: ")
+
+    return { newName, newAge, newGrade }
+}
 // Students Operation Functions
 
 function addStudent() {
@@ -76,16 +97,25 @@ function addStudent() {
         `)
 }
 
-function searchStudent(key) {
-    const studentSearchValue = prompt(`Enter ${key}: `)
+function updateStudent(student, studentUpdateData) {
+    student.name = studentUpdateData.newName
+    student.age = studentUpdateData.newAge
+    student.grade = studentUpdateData.newGrade
+}
+
+function findStudentById(studentId) {
+    return students.find(function (student) {
+        return student.id === studentId
+    })
+}
+
+function findStudentByName(studentName) {
     return students.filter(function (student) {
-        return student[key.toLowerCase()] === studentSearchValue
+        return studentname === studentName
     })
 }
 
 function showStudents(searchedStudentsList) {
-    console.clear()
-    console.log(`========== RESULT ==========`)
     for (let i = 0; i < searchedStudentsList.length; i++) {
         console.log(`
         ID : ${searchedStudentsList[i].id}
@@ -98,19 +128,19 @@ function showStudents(searchedStudentsList) {
     }
 }
 
+// Exit System Function
+
 function exitSystem() {
     isExitSystem = true
 }
 
 while (!isExitSystem) {
-    
+
     showMainMenu()
-    const welcomeChoice = prompt("Enter your choice: ");
-    switch (Number(welcomeChoice)) {
+    switch (Number(getUserChoice())) {
         case 1:
             showStudentsMenu()
-            const studentsMenuChoice = prompt("Enter your choice: ");
-            switch (Number(studentsMenuChoice)) {
+            switch (Number(getUserChoice())) {
                 case 1:
                     addStudent()
                     break
@@ -119,18 +149,22 @@ while (!isExitSystem) {
                     break
                 case 3:
                     showSearchMenu()
-                    const searchMethod = prompt("Choose: ")
-                    switch (Number(searchMethod)) {
+                    switch (Number(getUserChoice())) {
                         case 1:
-                            const searchStudentResultsById =  searchStudent("ID")
-                            showStudents(searchStudentResultsById)
-                            break;
+                            showStudents([findStudentById(getStudentId())])
+                            break
                         case 2:
-                            const searchStudentResultsByName = searchStudent("Name")
-                            showStudents(searchStudentResultsByName)
-                            break;
+                            showStudents(findStudentByName(getStudentName()))
+                            break
                     }
-                    
+                    break
+                case 4:
+                    let student = findStudentById(getStudentId())
+                    console.log("Current Data")
+                    showStudents([student])
+                    updateStudent(student, getStudentUpdatedData())
+                    break
+
             }
             break
         case 3:

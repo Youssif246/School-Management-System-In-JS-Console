@@ -1,1 +1,1 @@
-prompt("Press Enter To Continue...  ")
+showStudents([findStudentById()])
