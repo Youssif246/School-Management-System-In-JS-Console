@@ -42,11 +42,29 @@ function showStudentsMenu() {
 
 function showSearchMenu() {
     console.log(`
-========== SEARCH =========
+    ========== SEARCH =========
 
-1. Search By ID
+    1. Search By ID
 
-2. Search By Name      
+    2. Search By Name      
+        `)
+}
+
+function showConfirmDeletionMenu() {
+    console.log(`
+    Are you sure?
+
+    1. Yes
+
+    2. No        
+        `)
+}
+
+function showSucsassfulMassege() {
+    console.log(`
+    ---------------------------------
+         Student Added Successfully
+    ---------------------------------  
         `)
 }
 
@@ -54,6 +72,15 @@ function showSearchMenu() {
 
 function getUserChoice() {
     return prompt("Enter your choice: ")
+}
+
+function getNewStudentData() {
+    return {
+        id: prompt("Enter Student ID: "),
+        name: prompt("Enter Student Name: "),
+        age: prompt("Enter Student Age: "),
+        grade: prompt("Enter Student Grade: ")
+    }
 }
 
 function getStudentId() {
@@ -71,30 +98,11 @@ function getStudentUpdatedData() {
 
     return { newName, newAge, newGrade }
 }
+
 // Students Operation Functions
 
-function addStudent() {
-    console.clear()
-    console.log(`========= ADD STUDENT =========`)
-
-    let studentId = prompt("Enter Student ID: ")
-    let studentName = prompt("Enter Student Name: ")
-    let studentAge = prompt("Enter Student Age: ")
-    let studentGrade = prompt("Enter Student Grade: ")
-
-    let student = {
-        id: studentId,
-        name: studentName,
-        age: studentAge,
-        grade: studentGrade,
-    }
-
-    students.push(student)
-    console.log(`
-        ---------------------------------
-           Student Added Successfully
-        ---------------------------------  
-        `)
+function addNewStudent(newStudent) {
+    students.push(newStudent)
 }
 
 function updateStudent(student, studentUpdateData) {
@@ -104,15 +112,15 @@ function updateStudent(student, studentUpdateData) {
 }
 
 function findStudentById(studentId) {
-    return students.find(function (student) {
-        return student.id === studentId
-    })
+    return students.find((student) => student.id === studentId)
+}
+
+function findStudentIndexById(studentId) {
+    return students.findIndex((student) => student.id === studentId)
 }
 
 function findStudentByName(studentName) {
-    return students.filter(function (student) {
-        return studentname === studentName
-    })
+    return students.filter((student) => student.name === studentName)
 }
 
 function showStudents(searchedStudentsList) {
@@ -128,43 +136,69 @@ function showStudents(searchedStudentsList) {
     }
 }
 
+function deleteStudent(studentIndex) {
+    students.splice(studentIndex, 1)
+}
+
 // Exit System Function
 
 function exitSystem() {
     isExitSystem = true
 }
 
-while (!isExitSystem) {
+function deleteConsole() {
+    console.clear()
+}
 
+while (!isExitSystem) {
+    deleteConsole()
     showMainMenu()
     switch (Number(getUserChoice())) {
         case 1:
             showStudentsMenu()
             switch (Number(getUserChoice())) {
                 case 1:
-                    addStudent()
+                    deleteConsole()
+                    console.log(`========= ADD STUDENT =========`)
+                    addNewStudent(getNewStudentData())
+                    showSucsassfulMassege()
                     break
                 case 2:
+                    deleteConsole()
                     showStudents(students)
                     break
                 case 3:
+                    deleteConsole()
                     showSearchMenu()
                     switch (Number(getUserChoice())) {
                         case 1:
+                            deleteConsole()
                             showStudents([findStudentById(getStudentId())])
                             break
                         case 2:
+                            deleteConsole()
                             showStudents(findStudentByName(getStudentName()))
                             break
                     }
                     break
                 case 4:
+                    deleteConsole()
                     let student = findStudentById(getStudentId())
                     console.log("Current Data")
                     showStudents([student])
                     updateStudent(student, getStudentUpdatedData())
                     break
-
+                case 5:
+                    deleteConsole()
+                    let studentId = getStudentId()
+                    showConfirmDeletionMenu()
+                    switch (Number(getUserChoice())) {
+                        case 1:
+                            deleteStudent(findStudentIndexById(studentId))
+                            break
+                        case 2:
+                            break
+                    }
             }
             break
         case 3:
@@ -173,5 +207,4 @@ while (!isExitSystem) {
     }
 
     prompt("Press Enter To Continue...  ")
-    console.clear()
 }
