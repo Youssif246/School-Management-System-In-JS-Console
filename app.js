@@ -50,6 +50,21 @@ function showSearchMenu() {
         `)
 }
 
+function showSortMenu() {
+    console.log(`
+========================================
+            SORT STUDENTS
+========================================
+
+1. Sort By Name (A → Z)
+2. Sort By Grade (Highest First)
+3. Sort By Grade (Lowest First)
+4. Sort By Age (Youngest First)
+5. Sort By Age (Oldest First)
+6. Back        
+        `)
+}
+
 function showConfirmDeletionMenu() {
     console.log(`
     Are you sure?
@@ -60,7 +75,7 @@ function showConfirmDeletionMenu() {
         `)
 }
 
-function showSucsassfulMassege() {
+function showAddedSucsassfulMassege() {
     console.log(`
     ---------------------------------
          Student Added Successfully
@@ -123,6 +138,18 @@ function findStudentByName(studentName) {
     return students.filter((student) => student.name === studentName)
 }
 
+function sortStudentsByNumbers(sortMethod, sortOrder) {
+    return students.toSorted(function (a, b) {
+        return sortOrder === "desc" ? 
+        b[sortMethod] - a[sortMethod] :
+        a[sortMethod] - b[sortMethod]
+    })
+}
+
+function sortStudentsByStrings() {
+    return students.toSorted((a, b) => a.name.localeCompare(b.name))
+}
+
 function showStudents(searchedStudentsList) {
     for (let i = 0; i < searchedStudentsList.length; i++) {
         console.log(`
@@ -161,7 +188,7 @@ while (!isExitSystem) {
                     deleteConsole()
                     console.log(`========= ADD STUDENT =========`)
                     addNewStudent(getNewStudentData())
-                    showSucsassfulMassege()
+                    showAddedSucsassfulMassege()
                     break
                 case 2:
                     deleteConsole()
@@ -199,6 +226,32 @@ while (!isExitSystem) {
                         case 2:
                             break
                     }
+                case 6:
+                    deleteConsole()
+                    showSortMenu()
+                    switch (Number(getUserChoice())) {
+                        case 1:
+                            deleteConsole()
+                            showStudents(sortStudentsByStrings())
+                            break;
+                        case 2:
+                            deleteConsole()
+                            showStudents(sortStudentsByNumbers("grade", "desc"))
+                            break;
+                        case 3:
+                            deleteConsole()
+                            showStudents(sortStudentsByNumbers("grade", "asc"))
+                            break;
+                        case 4:
+                            deleteConsole()
+                            showStudents(sortStudentsByNumbers("age", "asc"))
+                            break;
+                        case 5:
+                            deleteConsole()
+                            showStudents(sortStudentsByNumbers("age", "desc"))
+                            break;
+                    }
+                       
             }
             break
         case 3:
