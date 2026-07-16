@@ -65,6 +65,24 @@ function showSortMenu() {
         `)
 }
 
+function showStatistics(statistics) {
+    console.log(`
+========== STATISTICS ==========
+
+Total Students : ${statistics.total}
+
+Passed Students : ${statistics.passed}
+
+Failed Students : ${statistics.failed}
+
+Highest Grade : ${statistics.highest}
+
+Lowest Grade : ${statistics.lowest}
+
+Average Grade : ${statistics.average}        
+        `)
+}
+
 function showConfirmDeletionMenu() {
     console.log(`
     Are you sure?
@@ -91,10 +109,10 @@ function getUserChoice() {
 
 function getNewStudentData() {
     return {
-        id: prompt("Enter Student ID: "),
+        id: Number(prompt("Enter Student ID: ")),
         name: prompt("Enter Student Name: "),
-        age: prompt("Enter Student Age: "),
-        grade: prompt("Enter Student Grade: ")
+        age: Number(prompt("Enter Student Age: ")),
+        grade: Number(prompt("Enter Student Grade: "))
     }
 }
 
@@ -148,6 +166,61 @@ function sortStudentsByNumbers(sortMethod, sortOrder) {
 
 function sortStudentsByStrings() {
     return students.toSorted((a, b) => a.name.localeCompare(b.name))
+}
+
+function countAllStudents(students) {
+    return students.length
+}
+
+function calculateHighestGrade(students) {
+    let highestGrade = students[0].grade
+
+    for (let index = 1; index < students.length; index++) {
+        if (students[index].grade > highestGrade) {
+            highestGrade = students[index].grade
+        }
+    }
+
+    return highestGrade
+}
+
+function calculateLowestGrade(students) {
+    let lowestGrade = students[0].grade
+
+    for (let index = 1; index < students.length; index++) {
+        if (students[index].grade < lowestGrade) {
+            lowestGrade = students[index].grade
+        }
+    }
+
+    return lowestGrade
+}
+
+function calculateAvaregGrade(students) {
+    let gradesSum = students.reduce(function (acc, curr) {
+        return acc + curr.grade
+    }, 0)
+
+    return gradesSum / students.length
+}
+
+function countPassedStudents(students) {
+    return students.filter((student) => student.grade > 50).length
+}
+
+function countFailedStudents(students) {
+    return students.filter((student) => student.grade < 50).length
+}
+
+function initStatistics(students) {
+    return statistics = {
+        total : countAllStudents(students),
+        passed : countPassedStudents(students),
+        failed : countFailedStudents(students),
+        highest : calculateHighestGrade(students),
+        lowest : calculateLowestGrade(students),
+        average : calculateAvaregGrade(students)
+    }
 }
 
 function showStudents(searchedStudentsList) {
@@ -226,6 +299,7 @@ while (!isExitSystem) {
                         case 2:
                             break
                     }
+                    break
                 case 6:
                     deleteConsole()
                     showSortMenu()
@@ -253,6 +327,10 @@ while (!isExitSystem) {
                     }
                        
             }
+            break
+        case 2:
+            deleteConsole()
+            showStatistics(initStatistics(students))
             break
         case 3:
             exitSystem()
