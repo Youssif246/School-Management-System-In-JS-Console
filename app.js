@@ -35,8 +35,7 @@ function showStudentsMenu() {
     4. Update Student
     5. Delete Student
     6. Sort Students
-    7. Filter Students
-    8. Back            
+    7. Back            
                 `)
 }
 
@@ -93,7 +92,7 @@ function showConfirmDeletionMenu() {
         `)
 }
 
-function showAddedSucsassfulMassege() {
+function showStudentAddedSuccessMessage() {
     console.log(`
     ---------------------------------
          Student Added Successfully
@@ -110,7 +109,7 @@ function getUserChoice() {
 function getNewStudentData() {
     return {
         id: Number(prompt("Enter Student ID: ")),
-        name: prompt("Enter Student Name: "),
+        name: prompt("Enter Student Name: ").trim(),
         age: Number(prompt("Enter Student Age: ")),
         grade: Number(prompt("Enter Student Grade: "))
     }
@@ -125,11 +124,23 @@ function getStudentName() {
 }
 
 function getStudentUpdatedData() {
-    const newName = prompt("Enter New Name: ")
-    const newAge = prompt("Enter New Age: ")
-    const newGrade = prompt("Enter New Grade: ")
+    const newName = prompt("Enter New Name: ").trim()
+    const newAge = Number(prompt("Enter New Age: "))
+    const newGrade = Number(prompt("Enter New Grade: "))
 
     return { newName, newAge, newGrade }
+}
+
+// Students Inputs Validation
+
+function validateStudentData(student) {
+    return (
+        student.id > 0 &&
+        student.name !== '' &&
+        student.age > 0 &&
+        student.grade >= 0 &&
+        student.grade <= 100
+    )
 }
 
 // Students Operation Functions
@@ -158,9 +169,9 @@ function findStudentByName(studentName) {
 
 function sortStudentsByNumbers(sortMethod, sortOrder) {
     return students.toSorted(function (a, b) {
-        return sortOrder === "desc" ? 
-        b[sortMethod] - a[sortMethod] :
-        a[sortMethod] - b[sortMethod]
+        return sortOrder === "desc" ?
+            b[sortMethod] - a[sortMethod] :
+            a[sortMethod] - b[sortMethod]
     })
 }
 
@@ -196,7 +207,7 @@ function calculateLowestGrade(students) {
     return lowestGrade
 }
 
-function calculateAvaregGrade(students) {
+function calculateAverageGrade(students) {
     let gradesSum = students.reduce(function (acc, curr) {
         return acc + curr.grade
     }, 0)
@@ -213,23 +224,23 @@ function countFailedStudents(students) {
 }
 
 function initStatistics(students) {
-    return statistics = {
-        total : countAllStudents(students),
-        passed : countPassedStudents(students),
-        failed : countFailedStudents(students),
-        highest : calculateHighestGrade(students),
-        lowest : calculateLowestGrade(students),
-        average : calculateAvaregGrade(students)
+    return {
+        total: countAllStudents(students),
+        passed: countPassedStudents(students),
+        failed: countFailedStudents(students),
+        highest: calculateHighestGrade(students),
+        lowest: calculateLowestGrade(students),
+        average: calculateAverageGrade(students)
     }
 }
 
-function showStudents(searchedStudentsList) {
-    for (let i = 0; i < searchedStudentsList.length; i++) {
+function showStudents(students) {
+    for (let i = 0; i < students.length; i++) {
         console.log(`
-        ID : ${searchedStudentsList[i].id}
-        Name : ${searchedStudentsList[i].name}
-        Age : ${searchedStudentsList[i].age}
-        Grade : ${searchedStudentsList[i].grade}
+        ID : ${students[i].id}
+        Name : ${students[i].name}
+        Age : ${students[i].age}
+        Grade : ${students[i].grade}
 
 ----------------------------
                     `)
@@ -240,102 +251,139 @@ function deleteStudent(studentIndex) {
     students.splice(studentIndex, 1)
 }
 
-// Exit System Function
+// Handle User Workflow
 
-function exitSystem() {
-    isExitSystem = true
-}
-
-function deleteConsole() {
-    console.clear()
-}
-
-while (!isExitSystem) {
-    deleteConsole()
+function handleMainMenu() {
+    clearConsole()
     showMainMenu()
     switch (Number(getUserChoice())) {
         case 1:
-            showStudentsMenu()
-            switch (Number(getUserChoice())) {
-                case 1:
-                    deleteConsole()
-                    console.log(`========= ADD STUDENT =========`)
-                    addNewStudent(getNewStudentData())
-                    showAddedSucsassfulMassege()
-                    break
-                case 2:
-                    deleteConsole()
-                    showStudents(students)
-                    break
-                case 3:
-                    deleteConsole()
-                    showSearchMenu()
-                    switch (Number(getUserChoice())) {
-                        case 1:
-                            deleteConsole()
-                            showStudents([findStudentById(getStudentId())])
-                            break
-                        case 2:
-                            deleteConsole()
-                            showStudents(findStudentByName(getStudentName()))
-                            break
-                    }
-                    break
-                case 4:
-                    deleteConsole()
-                    let student = findStudentById(getStudentId())
-                    console.log("Current Data")
-                    showStudents([student])
-                    updateStudent(student, getStudentUpdatedData())
-                    break
-                case 5:
-                    deleteConsole()
-                    let studentId = getStudentId()
-                    showConfirmDeletionMenu()
-                    switch (Number(getUserChoice())) {
-                        case 1:
-                            deleteStudent(findStudentIndexById(studentId))
-                            break
-                        case 2:
-                            break
-                    }
-                    break
-                case 6:
-                    deleteConsole()
-                    showSortMenu()
-                    switch (Number(getUserChoice())) {
-                        case 1:
-                            deleteConsole()
-                            showStudents(sortStudentsByStrings())
-                            break;
-                        case 2:
-                            deleteConsole()
-                            showStudents(sortStudentsByNumbers("grade", "desc"))
-                            break;
-                        case 3:
-                            deleteConsole()
-                            showStudents(sortStudentsByNumbers("grade", "asc"))
-                            break;
-                        case 4:
-                            deleteConsole()
-                            showStudents(sortStudentsByNumbers("age", "asc"))
-                            break;
-                        case 5:
-                            deleteConsole()
-                            showStudents(sortStudentsByNumbers("age", "desc"))
-                            break;
-                    }
-                       
-            }
+            handleStudentsMenu()
             break
         case 2:
-            deleteConsole()
+            clearConsole()
             showStatistics(initStatistics(students))
             break
         case 3:
             exitSystem()
             break
     }
+}
 
+function handleStudentsMenu() {
+    showStudentsMenu()
+    switch (Number(getUserChoice())) {
+        case 1:
+            handleAddStudent()
+            break
+        case 2:
+            clearConsole()
+            showStudents(students)
+            break
+        case 3:
+            handleSearchStudents()
+            break
+        case 4:
+            handleUpdateStudent()
+            break
+        case 5:
+            handleDeleteStudent()
+            break
+        case 6:
+            handleSortStudents()
+            break
+        case 7:
+            break    
+    }
+}
+
+function handleAddStudent() {
+    clearConsole()
+    console.log(`========= ADD STUDENT =========`)
+    const student = getNewStudentData();
+
+    if (validateStudentData(student)) {
+        addNewStudent(student);
+        showStudentAddedSuccessMessage();
+    } else {
+        console.log("\nYour Inputs Is Not Valid Please Check It Again")
+    }
+}
+
+function handleSearchStudents() {
+    clearConsole()
+    showSearchMenu()
+    switch (Number(getUserChoice())) {
+        case 1:
+            clearConsole()
+            showStudents([findStudentById(getStudentId())])
+            break
+        case 2:
+            clearConsole()
+            showStudents(findStudentByName(getStudentName()))
+            break
+    }
+}
+
+function handleUpdateStudent() {
+    clearConsole()
+    let student = findStudentById(getStudentId())
+    console.log("Current Data")
+    showStudents([student])
+    updateStudent(student, getStudentUpdatedData())
+}
+
+function handleSortStudents() {
+    clearConsole()
+    showSortMenu()
+    switch (Number(getUserChoice())) {
+        case 1:
+            clearConsole()
+            showStudents(sortStudentsByStrings())
+            break;
+        case 2:
+            clearConsole()
+            showStudents(sortStudentsByNumbers("grade", "desc"))
+            break;
+        case 3:
+            clearConsole()
+            showStudents(sortStudentsByNumbers("grade", "asc"))
+            break;
+        case 4:
+            clearConsole()
+            showStudents(sortStudentsByNumbers("age", "asc"))
+            break;
+        case 5:
+            clearConsole()
+            showStudents(sortStudentsByNumbers("age", "desc"))
+            break;
+    }
+}
+
+function handleDeleteStudent() {
+    clearConsole()
+    let studentId = getStudentId()
+    showConfirmDeletionMenu()
+    switch (Number(getUserChoice())) {
+        case 1:
+            deleteStudent(findStudentIndexById(studentId))
+            break
+        case 2:
+            break
+    }
+}
+
+// Exit System Function
+
+function exitSystem() {
+    isExitSystem = true
+}
+
+function clearConsole() {
+    console.clear()
+}
+
+while (!isExitSystem) {
+    handleMainMenu()
     prompt("Press Enter To Continue...  ")
 }
